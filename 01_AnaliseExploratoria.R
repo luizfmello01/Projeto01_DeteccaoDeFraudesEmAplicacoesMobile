@@ -13,9 +13,16 @@ getwd()
 source("Utils.R")
 # install.packages("data.table")
 # install.packages("gmodels")
+# install.packages("randomForest")
+# install.packages("caret")
+# install.packages("e1071")
 # install.packages("performanceEstimation")
+# install.packages("ROCR")
 library(data.table)
 library(gmodels)
+library(randomForest)
+library(caret)
+library(e1071)
 
 
 #### Carregar o dataset ####
