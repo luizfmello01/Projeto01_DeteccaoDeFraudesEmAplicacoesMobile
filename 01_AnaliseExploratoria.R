@@ -18,11 +18,14 @@ source("Utils.R")
 # install.packages("e1071")
 # install.packages("performanceEstimation")
 # install.packages("ROCR")
+# install.packages(c("xts", "quantmod"))
+# install.packages("Packages/DMwR_0.4.1.tar.gz", repos = NULL, type = "source")
 library(data.table)
 library(gmodels)
 library(randomForest)
 library(caret)
 library(e1071)
+library(DMwR)
 
 
 #### Carregar o dataset ####
