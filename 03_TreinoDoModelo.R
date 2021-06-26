@@ -31,21 +31,14 @@ trainIndex <- createDataPartition(apps_models$download, p = .7,
 v1.train <- apps_models[trainIndex,]
 v1.test <- apps_models[-trainIndex,]
 
-# Balancear a variável target com o método upSample
-v1.train <- upSample(v1.train[, 1:5],
-                  v1.train$download,
-                  yname = "download")
 
 # Treinamento da primeira versão do modelo
 modelo_v1 <- naiveBayes(download ~ .,
                            data = v1.train)
 
-sum(v1.train$download == predict(modelo_v1, v1.train)) / nrow(v1.train)
+acuracia_treino_v1 <- round(sum(v1.train$download == predict(modelo_v1, v1.train)) / nrow(v1.train), 2)
 
-previsao_v1 <- predict(modelo_v1, v1.test)
-
-cm_v1 <- confusionMatrix( table(v1.test$download, previsao_v1), positive = "1", mode = "prec_recall"  )
-cm_v1
+paste("Nivel de acurácia dos dados de treino:", acuracia_treino_v1, ",o modelo aprendeu bem com os dados de treino")
 
 
 #### Modelo v2 ####
@@ -58,23 +51,34 @@ trainIndex <- createDataPartition(apps_models$download, p = .7,
 v2.train <- apps_models[trainIndex,]
 v2.test <- apps_models[-trainIndex,]
 
-# Balancear a variável target com o método upSample
-v2.train <- upSample(v2.train[, 1:5],
-                     v2.train$download,
-                     yname = "download")
 
 # Treinamento da primeira versão do modelo
-modelo_v2 <- naiveBayes(download ~ endereco_ip
-                             + id_canal
-                             + id_aplicativo,
+modelo_v2 <- naiveBayes(download ~ . - id_dispositivo,
                              data = v2.train)
 
-sum(v2.train$download == predict(modelo_v2, v2.train)) / nrow(v2.train)
 
-previsao_v2 <- predict(modelo_v2, v2.test)
-
-cm_v2 <- confusionMatrix( table(v2.test$download, previsao_v2), positive = "1", mode = "prec_recall"  )
-cm_v2
+acuracia_treino_v2 <- round(sum(v2.train$download == predict(modelo_v2, v2.train)) / nrow(v2.train), 2)
+paste("Nivel de acurácia dos dados de treino:", acuracia_treino_v2, ",o modelo aprendeu bem com os dados de treino")
 
 
-# TO-DO: AVALIAR MELHOR O MODELO
+#### Modelo v3 ####
+# Modelo de machine learning com NaiveBayes, balanceando as classes
+
+# Separar dados de treino e de teste
+trainIndex <- createDataPartition(apps_models$download, p = .7,
+                                  list = FALSE)
+v3.train <- apps_models[trainIndex,]
+v3.test <- apps_models[-trainIndex,]
+
+# Balancear os dados de treino
+formula_train <- as.formula("download ~ .")
+v3.train_balanceados <- SMOTE(formula_train, v3.train)
+
+
+# Treinamento da primeira versão do modelo
+modelo_v3 <- naiveBayes(formula_train,
+                        data = v3.train_balanceados)
+
+
+acuracia_treino_v3 <- round(sum(v3.train_balanceados$download == predict(modelo_v3, v3.train_balanceados)) / nrow(v3.train_balanceados), 2)
+paste("Nivel de acurácia dos dados de treino:", acuracia_treino_v3, ",o modelo aprendeu bem com os dados de treino")
