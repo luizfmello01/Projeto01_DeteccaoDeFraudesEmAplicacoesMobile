@@ -20,12 +20,15 @@ source("Utils.R")
 # install.packages("ROCR")
 # install.packages(c("xts", "quantmod"))
 # install.packages("Packages/DMwR_0.4.1.tar.gz", repos = NULL, type = "source")
+# install.packages("class")
 library(data.table)
 library(gmodels)
 library(randomForest)
 library(caret)
 library(e1071)
 library(DMwR)
+library(class)
+library(ROCR)
 
 
 #### Carregar o dataset ####
