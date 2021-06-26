@@ -8,3 +8,11 @@ to.factor <- function(df, variables) {
   
   return(df)
 }
+
+# Função para retornar métricas do modelo a partir de uma confusion matrix
+metrics.models <- function(cm) {
+  return (c(Acuracia = cm$overall[["Accuracy"]],
+    Precisao = cm$byClass[["Precision"]],
+    Recall = cm$byClass[["Recall"]],
+    F1Score = cm$byClass[["F1"]]))
+}
