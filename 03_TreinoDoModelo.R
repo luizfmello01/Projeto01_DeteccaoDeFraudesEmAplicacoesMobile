@@ -128,3 +128,55 @@ target.train <- unlist(v6.train_balanceados[,"download"])
 
 # Treinamento da primeira versão do modelo
 modelo_v6 <- knn(v6.train_balanceados, v6.test, cl = target.train)
+
+
+
+#### Modelo v7 ####
+# O modelo de machine learning escolhido para a sétima versão é o Random Forest,
+# Com os dados de treino balanceados
+
+# Converter de factor to Inteiro
+apps_rf <- to.integer(apps_models, c("endereco_ip", "id_aplicativo", "id_dispositivo",
+                                      "id_sistema_operacional", "id_canal"))
+
+# Separar dados de treino e de teste
+trainIndex <- createDataPartition(apps_rf$download, p = .7,
+                                  list = FALSE)
+v7.train <- apps_rf[trainIndex,]
+v7.test <- apps_rf[-trainIndex,]
+
+# Balancear os dados de treino
+formula_train <- as.formula("download ~ .")
+v7.train_balanceados <- SMOTE(formula_train, v7.train)
+
+# Treinamento da primeira versão do modelo
+modelo_v7 <- randomForest(formula_train,
+                          data = v7.train_balanceados,
+                          ntree = 100,
+                          nodesize = 10)
+
+
+
+#### Modelo v8 ####
+# O modelo de machine learning escolhido para a sétima versão é o Random Forest,
+# Com os dados de treino balanceados e variáveis mais relevantes
+
+# Converter de factor to Inteiro
+apps_rf <- to.integer(apps_models, c("endereco_ip", "id_aplicativo", "id_dispositivo",
+                                     "id_sistema_operacional", "id_canal"))
+
+# Separar dados de treino e de teste
+trainIndex <- createDataPartition(apps_rf$download, p = .7,
+                                  list = FALSE)
+v8.train <- apps_rf[trainIndex, -"id_dispositivo"]
+v8.test <- apps_rf[-trainIndex, -"id_dispositivo"]
+
+# Balancear os dados de treino
+formula_train <- as.formula("download ~ endereco_ip + id_aplicativo + id_sistema_operacional + id_canal")
+v8.train_balanceados <- SMOTE(formula_train, v8.train)
+
+# Treinamento da primeira versão do modelo
+modelo_v8 <- randomForest(formula_train,
+                          data = v8.train_balanceados,
+                          ntree = 100,
+                          nodesize = 10)
