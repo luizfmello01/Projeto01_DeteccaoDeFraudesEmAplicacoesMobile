@@ -10,7 +10,7 @@ getwd()
 
 
 #### Carregar pacotes e arquivos utilitários ####
-source("Utils.R")
+source("Utils.R", encoding = "UTF-8")
 # install.packages("data.table")
 # install.packages("gmodels")
 # install.packages("randomForest")
@@ -34,10 +34,6 @@ library(ROCR)
 #### Carregar o dataset ####
 # ?fread
 apps <- fread("Datasets/train_sample.csv", sep = ",", header = TRUE)
-
-# O dataset tem muitos dados, vamos realizar um split no dataset
-# indexes <- sample.int(nrow(apps), 2000000)
-# apps <- apps[indexes,]
 
 # Visualizar o dataset
 str(apps)
