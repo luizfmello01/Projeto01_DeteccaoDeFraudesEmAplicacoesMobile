@@ -6,7 +6,6 @@
 metricas_bayes <- list()
 previsao_v1 <- predict(modelo_v1, v1.test)
 cm_v1 <- confusionMatrix(previsao_v1, reference = v1.test$download, positive = "1")
-cm_v1
 metricas_bayes <- append(metricas_bayes, list(metrics.models(cm_v1)))
 predvec <- ifelse(previsao_v1=="0", 0, 1)
 realvec <- ifelse(v1.test$download=="0", 0, 1)
@@ -25,7 +24,6 @@ perf_v2 <- performance(pred, "tpr", "fpr")
 
 previsao_v3 <- predict(modelo_v3, v3.test)
 cm_v3 <- confusionMatrix(previsao_v3, reference = v3.test$download, positive = "1")
-cm_v3
 metricas_bayes <- append(metricas_bayes, list(metrics.models(cm_v3)))
 predvec <- ifelse(previsao_v3=="0", 0, 1)
 realvec <- ifelse(v3.test$download=="0", 0, 1)
@@ -47,7 +45,7 @@ plot(perf_v3, col = rainbow(10), main = "Versão 3")
 
 ## Resultado Naive Bayes ##
 # No modelo de Naive Bayes, o modelo que foi escolhido como melhor perfomance,
-# Foi o modelo V1, foi utlizado para esse caso, a maior métrica de precisão
+# Foi o modelo V2, foi utlizado para esse caso, utilizamos o F1Score como referencia
 
 
 #### Avaliação dos modelos do algoritmo KNN ####
@@ -89,27 +87,61 @@ plot(perf_v6, col = rainbow(10), main = "Versão 6")
 
 ## Resultado KNN ##
 # No modelo de KNN, o modelo que foi escolhido como melhor perfomance,
-# Foi o modelo V4, foi utlizado para esse caso, a maior métrica de precisão
+# Foi o modelo V5, foi utlizado para esse caso, a maior métrica de FScore
 
 
-# Avaliação final, entre os modelos V1 e V4
+#### Avaliação dos modelos de RandomForest ####
+metricas_rf <- list()
+previsao_v7 <- predict(modelo_v7, v7.test)
+cm_v7 <- confusionMatrix(previsao_v7, reference = v7.test$download, positive = "1")
+metricas_rf <- append(metricas_rf, list(metrics.models(cm_v7)))
+predvec <- ifelse(previsao_v7=="0", 0, 1)
+realvec <- ifelse(v7.test$download=="0", 0, 1)
+pred <- prediction(predvec, realvec)
+perf_v7 <- performance(pred, "tpr", "fpr")
+
+previsao_v8 <- predict(modelo_v8, v8.test)
+cm_v8 <- confusionMatrix(previsao_v8, reference = v8.test$download, positive = "1")
+metricas_rf <- append(metricas_rf, list(metrics.models(cm_v8)))
+predvec <- ifelse(previsao_v8=="0", 0, 1)
+realvec <- ifelse(v8.test$download=="0", 0, 1)
+pred <- prediction(predvec, realvec)
+perf_v8 <- performance(pred, "tpr", "fpr")
+
+for ( i in 1:2 ) {
+  print(paste("Métricas RF da versão", i))
+  print(metricas_rf[[i]])
+  cat("\n")
+}
+
+
+# Avaliação final, entre os modelos V2, V4 e V7
 metricas_final <- list()
-previsao_v1 <- predict(modelo_v1, v1.test)
-cm_v1 <- confusionMatrix(previsao_v1, reference = v1.test$download, positive = "1")
-metricas_final <- append(metricas_final, list(metrics.models(cm_v1)))
+previsao_v2 <- predict(modelo_v2, v2.test)
+cm_v2 <- confusionMatrix(previsao_v2, reference = v2.test$download, positive = "1")
+metricas_final <- append(metricas_final, list(metrics.models(cm_v2)))
 
 cm_v4 <- confusionMatrix(modelo_v4, reference = v4.test$download, positive = "1")
 metricas_final <- append(metricas_final, list(metrics.models(cm_v4)))
 
+previsao_v7 <- predict(modelo_v7, v7.test)
+cm_v7 <- confusionMatrix(previsao_v7, reference = v7.test$download, positive = "1")
+metricas_final <- append(metricas_final, list(metrics.models(cm_v7)))
+
 # Exibir as métricas de cada modelo
-for ( i in 1:2 ) {
+for ( i in 1:3 ) {
   print(paste("Métricas Final da versão", i))
   print(metricas_final[[i]])
   cat("\n")
 }
 
-print("Confusion Matrix da V1")
-cm_v1$table
+print("Confusion Matrix da V2")
+cm_v2$table
 
 print("Confusion Matrix da V4")
 cm_v4$table
+
+print("Confusion Matrix da V7")
+cm_v7$table
+
+# Será realizado otimização no modelo Naive Bayes e Random Forest
